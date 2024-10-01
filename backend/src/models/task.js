@@ -26,8 +26,8 @@ const Task = sequelize.define(
     },
     status: {
       type: DataTypes.ENUM,
-      values: [1, 2],
-      defaultValue: 1,
+      values: ["1", "2"],
+      defaultValue: "1",
     },
   },
   { freezeTableName: true }

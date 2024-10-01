@@ -5,5 +5,5 @@ const userRoutes = require("./user");
 const taskRoutes = require("./task");
 
 app.use("/api/user", userRoutes);
-app.use("/api/news", taskRoutes);
+app.use("/api/task", taskRoutes);
 module.exports = app;

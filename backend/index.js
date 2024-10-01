@@ -16,8 +16,10 @@ sequelize
   .authenticate()
   .then(() => {
     console.log("Db connected");
-    app.listen(port, () => {
-      console.log(`Connected to ${port}`);
+    sequelize.sync({ alter: true }).then((res) => {
+      app.listen(port, () => {
+        console.log(`Connected to ${port}`);
+      });
     });
   })
   .catch((err) => {
