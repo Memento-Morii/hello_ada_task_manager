@@ -8,6 +8,7 @@ export type TaskModel = {
   title?: string;
   description?: string;
   status?: number;
+  createdAt?: string;
 };
 export type ITaskState = {
   loading?: boolean;
@@ -55,6 +56,123 @@ export const fetchTasks = createAsyncThunk(
     }
   }
 );
+export const createTask = createAsyncThunk(
+  "task/create",
+  async (task: TaskModel, thunkAPI) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.post(
+        "http://localhost:3001/api/task/",
+        task,
+        {
+          headers: { authToken: token },
+        }
+      );
+      console.log(response.data);
+      if (response.data.RESPONSE === "FAILURE") {
+        const errMessage: string = response.data.message;
+        thunkAPI.dispatch(
+          openSnackbar({
+            snackbarMessage: errMessage,
+            snackbarSeverity: SnackbarSeverity.Error,
+          })
+        );
+        return thunkAPI.rejectWithValue(response.data);
+      }
+      return thunkAPI.fulfillWithValue(response.data.result);
+    } catch (error: any) {
+      console.log({ myError: error });
+      if (!error.response) {
+        throw error;
+      }
+      const errorMessage: string = error.response.data.message;
+      thunkAPI.dispatch(
+        openSnackbar({
+          snackbarMessage: errorMessage,
+          snackbarSeverity: SnackbarSeverity.Error,
+        })
+      );
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+export const updateTask = createAsyncThunk(
+  "task/update",
+  async (task: TaskModel, thunkAPI) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.put(
+        "http://localhost:3001/api/task/",
+        task,
+        {
+          params: { taskId: task.id },
+          headers: { authToken: token },
+        }
+      );
+      console.log(response.data);
+      if (response.data.RESPONSE === "FAILURE") {
+        const errMessage: string = response.data.message;
+        thunkAPI.dispatch(
+          openSnackbar({
+            snackbarMessage: errMessage,
+            snackbarSeverity: SnackbarSeverity.Error,
+          })
+        );
+        return thunkAPI.rejectWithValue(response.data);
+      }
+      return thunkAPI.fulfillWithValue(response.data.result);
+    } catch (error: any) {
+      console.log({ myError: error });
+      if (!error.response) {
+        throw error;
+      }
+      const errorMessage: string = error.response.data.message;
+      thunkAPI.dispatch(
+        openSnackbar({
+          snackbarMessage: errorMessage,
+          snackbarSeverity: SnackbarSeverity.Error,
+        })
+      );
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+export const deleteTask = createAsyncThunk(
+  "task/delete",
+  async (taskId: number, thunkAPI) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const response = await axios.delete("http://localhost:3001/api/task/", {
+        params: { taskId: taskId },
+        headers: { authToken: token },
+      });
+      if (response.data.RESPONSE === "FAILURE") {
+        const errMessage: string = response.data.message;
+        thunkAPI.dispatch(
+          openSnackbar({
+            snackbarMessage: errMessage,
+            snackbarSeverity: SnackbarSeverity.Error,
+          })
+        );
+        return thunkAPI.rejectWithValue(response.data);
+      }
+      return thunkAPI.fulfillWithValue(response.data.result);
+    } catch (error: any) {
+      console.log({ myError: error });
+      if (!error.response) {
+        throw error;
+      }
+      const errorMessage: string = error.response.data.message;
+      thunkAPI.dispatch(
+        openSnackbar({
+          snackbarMessage: errorMessage,
+          snackbarSeverity: SnackbarSeverity.Error,
+        })
+      );
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
 const TaskReducer = createSlice({
   name: ActionTypes.FETCH_TASKS,
   initialState,
@@ -71,11 +189,26 @@ const TaskReducer = createSlice({
       }
     );
     builder.addCase(fetchTasks.rejected, (state, obj) => {
-      console.log(obj);
-      //   const errorMessage: any = obj.payload;
-      //   state.error = errorMessage.message;
       state.loading = false;
     });
+    builder.addCase(createTask.pending, (state, action) => {
+      // state.loading = true;
+    });
+    builder.addCase(
+      createTask.fulfilled,
+      (state, action: PayloadAction<TaskModel[]>) => {
+        // state.loading = false;
+      }
+    );
+    builder.addCase(updateTask.pending, (state, action) => {
+      // state.loading = true;
+    });
+    builder.addCase(
+      updateTask.fulfilled,
+      (state, action: PayloadAction<TaskModel[]>) => {
+        // state.loading = false;
+      }
+    );
   },
 });
 export default TaskReducer;

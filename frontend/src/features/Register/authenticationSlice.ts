@@ -3,6 +3,10 @@ import { ActionTypes } from "../../redux/constants/actionTypes";
 import axios from "axios";
 import { openSnackbar, SnackbarSeverity } from "../../redux/reducers/uiSlices";
 
+interface CustomState {
+  loading?: boolean;
+  error?: string;
+}
 type IRegisterState = {
   email?: string;
   password?: string;

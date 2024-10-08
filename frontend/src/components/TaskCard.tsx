@@ -6,8 +6,16 @@ type TaskCardProps = {
   title: string;
   description: string;
   createdOn: string;
+  onUpdateClicked: () => void;
+  onDeleteClicked: () => void;
 };
-export const TaskCard = ({ title, description, createdOn }: TaskCardProps) => {
+export const TaskCard = ({
+  title,
+  description,
+  createdOn,
+  onUpdateClicked,
+  onDeleteClicked,
+}: TaskCardProps) => {
   return (
     <Box
       padding="1rem"
@@ -25,8 +33,12 @@ export const TaskCard = ({ title, description, createdOn }: TaskCardProps) => {
         {createdOn}
       </Typography>
       <Box marginTop="1rem" display="flex">
-        <EditOutlinedIcon sx={{ cursor: "pointer", color: "orange" }} />
+        <EditOutlinedIcon
+          onClick={onUpdateClicked}
+          sx={{ cursor: "pointer", color: "orange" }}
+        />
         <DeleteOutlineOutlinedIcon
+          onClick={onDeleteClicked}
           sx={{ cursor: "pointer", marginLeft: "0.5rem", color: "red" }}
         />
       </Box>
